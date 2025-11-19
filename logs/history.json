@@ -1,0 +1,44 @@
+[
+    {
+        "id": "691e139178957",
+        "timestamp": "2025-11-19 18:59:29",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "api\/testedeploy.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "691e137a0836f",
+        "timestamp": "2025-11-19 18:59:06",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "api\/testedeploy.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "691e108674f89",
+        "timestamp": "2025-11-19 18:46:30",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "api\/testedeploy.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    }
+]

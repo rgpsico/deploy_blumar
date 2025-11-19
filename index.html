@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Deploy & Sync - Blumar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0052a3 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .header-section h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .header-section .subtitle {
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .tab-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-pills .nav-link.active {
+            background: var(--primary-color);
+        }
+
+        .nav-pills .nav-link:hover:not(.active) {
+            background: #f8f9fa;
+        }
+
+        .environment-selector {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .file-browser {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+            margin-bottom: 20px;
+        }
+
+        .file-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .file-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .file-item:hover {
+            background: #e9ecef;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .file-item.selected {
+            background: #e7f3ff;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .file-meta {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-left: 15px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .status-identical {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-different {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-new {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-success, .btn-warning, .btn-info {
+            padding: 12px 30px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+
+        .comparison-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .comparison-panel.show {
+            display: block;
+        }
+
+        .history-item {
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .history-item.push {
+            border-left-color: #28a745;
+        }
+
+        .history-item.pull {
+            border-left-color: #007bff;
+        }
+
+        .history-item.restore {
+            border-left-color: #ffc107;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stats-card h3 {
+            font-size: 36px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .stats-card .label {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .conflict-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-section input,
+        .filter-section select {
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
+            }
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-container">
+            <!-- Header -->
+            <div class="header-section">
+                <h1><i class="bi bi-cloud-upload"></i> Sistema de Deploy & Sincronização</h1>
+                <div class="subtitle">Gerenciamento de código entre ambientes - Blumar</div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-pills mb-4" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#deploy-tab">
+                        <i class="bi bi-upload"></i> Deploy
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#sync-tab">
+                        <i class="bi bi-download"></i> Sync
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#compare-tab">
+                        <i class="bi bi-columns-gap"></i> Comparar
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#history-tab">
+                        <i class="bi bi-clock-history"></i> Histórico
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                
+                <!-- DEPLOY TAB -->
+                <div class="tab-pane fade show active" id="deploy-tab">
+                    <div class="environment-selector">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-folder2-open"></i> Ambiente de Origem
+                                </label>
+                                <select id="sourceEnv" class="form-select form-select-lg">
+                                    <option value="local">Meu Ambiente Local</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-folder"></i> Pasta
+                                </label>
+                                <select id="sourceFolder" class="form-select form-select-lg">
+                                    <option value="">Carregando...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="filter-section">
+                        <input type="text" id="searchFiles" class="form-control" placeholder="🔍 Buscar arquivos...">
+                        <select id="includeSubfolders" class="form-select" style="width: auto;">
+                            <option value="false">Somente desta pasta</option>
+                            <option value="true">Incluir subpastas</option>
+                        </select>
+                        <select id="sortOrder" class="form-select" style="width: auto;">
+                            <option value="date">Data (recentes)</option>
+                            <option value="name">Nome (A-Z)</option>
+                        </select>
+                    </div>
+
+                    <!-- Lista de Arquivos -->
+                    <div class="file-browser">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-earmark-code"></i> Arquivos
+                                <span id="fileCount" class="badge bg-primary ms-2">0</span>
+                            </h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary" onclick="selectAll()">
+                                    <i class="bi bi-check-all"></i> Selecionar Todos
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="deselectAll()">
+                                    <i class="bi bi-x"></i> Limpar
+                                </button>
+                            </div>
+                        </div>
+                        <div id="fileList" class="file-list">
+                            <div class="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                                <p class="mt-2">Carregando arquivos...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Destinos -->
+                    <div class="mb-4">
+                        <h5 class="mb-3"><i class="bi bi-targets"></i> Enviar Para:</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-check form-check-lg mb-2">
+                                    <input class="form-check-input" type="checkbox" value="Roger" id="dest-roger">
+                                    <label class="form-check-label" for="dest-roger">
+                                        <i class="bi bi-person"></i> Roger
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check form-check-lg mb-2">
+                                    <input class="form-check-input" type="checkbox" value="Julio" id="dest-julio">
+                                    <label class="form-check-label" for="dest-julio">
+                                        <i class="bi bi-person"></i> Julio
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check form-check-lg mb-2">
+                                    <input class="form-check-input" type="checkbox" value="Jades" id="dest-jades">
+                                    <label class="form-check-label" for="dest-jades">
+                                        <i class="bi bi-person"></i> Jades
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check form-check-lg mb-2">
+                                    <input class="form-check-input" type="checkbox" value="producao" id="dest-prod">
+                                    <label class="form-check-label fw-bold text-danger" for="dest-prod">
+                                        <i class="bi bi-exclamation-triangle"></i> Produção
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opções -->
+                    <div class="mb-4">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="createBackup" checked>
+                            <label class="form-check-label" for="createBackup">
+                                <i class="bi bi-shield-check"></i> Criar backup antes de sobrescrever
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="forceOverwrite">
+                            <label class="form-check-label" for="forceOverwrite">
+                                <i class="bi bi-lightning"></i> Forçar sobrescrita (ignorar conflitos)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-lg" onclick="performDeploy()">
+                            <i class="bi bi-rocket-takeoff"></i> Deploy (Enviar)
+                        </button>
+                        <button class="btn btn-warning btn-lg" onclick="checkConflicts()">
+                            <i class="bi bi-exclamation-triangle"></i> Verificar Conflitos
+                        </button>
+                    </div>
+
+                    <!-- Painel de Conflitos -->
+                    <div id="conflictPanel" class="comparison-panel"></div>
+                </div>
+
+                <!-- SYNC TAB -->
+                <div class="tab-pane fade" id="sync-tab">
+                    <div class="environment-selector">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-cloud"></i> Baixar de
+                                </label>
+                                <select id="pullSourceEnv" class="form-select form-select-lg" onchange="loadPullFolders()">
+                                    <option value="Roger">Roger</option>
+                                    <option value="Julio">Julio</option>
+                                    <option value="Jades">Jades</option>
+                                    <option value="producao">Produção</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-folder"></i> Pasta
+                                </label>
+                                <select id="pullSourceFolder" class="form-select form-select-lg" onchange="loadPullFiles()">
+                                    <option value="">Carregando...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="filter-section">
+                        <input type="text" id="pullSearchFiles" class="form-control" placeholder="🔍 Buscar arquivos...">
+                        <select id="pullIncludeSubfolders" class="form-select" style="width: auto;" onchange="loadPullFiles()">
+                            <option value="false">Somente desta pasta</option>
+                            <option value="true">Incluir subpastas</option>
+                        </select>
+                        <select id="pullSortOrder" class="form-select" style="width: auto;">
+                            <option value="date">Data (recentes)</option>
+                            <option value="name">Nome (A-Z)</option>
+                        </select>
+                    </div>
+
+                    <!-- Lista de Arquivos -->
+                    <div class="file-browser">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-earmark-code"></i> Arquivos para Baixar
+                                <span id="pullFileCount" class="badge bg-success ms-2">0</span>
+                            </h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-success" onclick="selectAllPull()">
+                                    <i class="bi bi-check-all"></i> Selecionar Todos
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="deselectAllPull()">
+                                    <i class="bi bi-x"></i> Limpar
+                                </button>
+                            </div>
+                        </div>
+                        <div id="pullFileList" class="file-list">
+                            <div class="loading">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                                <p class="mt-2">Carregando arquivos...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Destino -->
+                    <div class="mb-4">
+                        <h5 class="mb-3"><i class="bi bi-laptop"></i> Baixar Para:</h5>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> 
+                            Os arquivos serão baixados para: <strong>Meu Ambiente Local</strong>
+                        </div>
+                    </div>
+
+                    <!-- Opções -->
+                    <div class="mb-4">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="pullCreateBackup" checked>
+                            <label class="form-check-label" for="pullCreateBackup">
+                                <i class="bi bi-shield-check"></i> Criar backup antes de sobrescrever
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="pullForceOverwrite">
+                            <label class="form-check-label" for="pullForceOverwrite">
+                                <i class="bi bi-lightning"></i> Forçar sobrescrita (ignorar conflitos)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-success btn-lg" onclick="performPull()">
+                            <i class="bi bi-download"></i> Pull (Baixar)
+                        </button>
+                        <button class="btn btn-warning btn-lg" onclick="checkPullConflicts()">
+                            <i class="bi bi-exclamation-triangle"></i> Verificar Conflitos
+                        </button>
+                    </div>
+
+                    <!-- Painel de Conflitos -->
+                    <div id="pullConflictPanel" class="comparison-panel"></div>
+                </div>
+
+                <!-- COMPARE TAB -->
+                <div class="tab-pane fade" id="compare-tab">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        Compare arquivos entre diferentes ambientes para ver as diferenças.
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Ambiente A</label>
+                            <select id="compareEnvA" class="form-select">
+                                <option value="local">Local</option>
+                                <option value="Roger">Roger</option>
+                                <option value="Julio">Julio</option>
+                                <option value="Jades">Jades</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Ambiente B</label>
+                            <select id="compareEnvB" class="form-select">
+                                <option value="Roger">Roger</option>
+                                <option value="Julio">Julio</option>
+                                <option value="Jades">Jades</option>
+                                <option value="producao">Produção</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-info btn-lg" onclick="performCompare()">
+                        <i class="bi bi-file-diff"></i> Comparar Ambientes
+                    </button>
+
+                    <div id="compareResults" class="comparison-panel mt-4"></div>
+                </div>
+
+                <!-- HISTORY TAB -->
+                <div class="tab-pane fade" id="history-tab">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <div class="label">Total de Operações</div>
+                                <h3 id="statsTotal">0</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <div class="label">Pushes</div>
+                                <h3 id="statsPush">0</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                <div class="label">Pulls</div>
+                                <h3 id="statsPull">0</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                                <div class="label">Restores</div>
+                                <h3 id="statsRestore">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="historyList">
+                        <div class="loading">Carregando histórico...</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da API - Deploy System</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .test-section {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #4ec9b0;
+            margin-top: 0;
+        }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #1177bb;
+        }
+        .result {
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #4ec9b0; }
+        .error { color: #f48771; }
+        .info { color: #dcdcaa; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste da API - Sistema de Deploy</h1>
+
+    <div class="test-section">
+        <h2>1. Testar Conexão</h2>
+        <button onclick="testConnection()">Testar API</button>
+        <div id="result-connection" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Listar Diretórios</h2>
+        <button onclick="testListDirs('local')">Local</button>
+        <button onclick="testListDirs('Roger')">Roger</button>
+        <button onclick="testListDirs('Julio')">Julio</button>
+        <div id="result-dirs" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Listar Arquivos</h2>
+        <button onclick="testListFiles('local', '')">Local (raiz)</button>
+        <button onclick="testListFiles('local', '', true)">Local (com subpastas)</button>
+        <div id="result-files" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Histórico</h2>
+        <button onclick="testHistory()">Buscar Histórico</button>
+        <button onclick="testStats()">Buscar Estatísticas</button>
+        <div id="result-history" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Configuração</h2>
+        <button onclick="checkConfig()">Verificar Configuração</button>
+        <div id="result-config" class="result"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            element.innerHTML = `<span class="${className}">[${timestamp}] ${message}</span>`;
+        }
+
+        async function testConnection() {
+            log('result-connection', 'Testando conexão...', 'info');
+            try {
+                const response = await axios.get('api.php', {
+                    params: { action: 'getStats' }
+                });
+                log('result-connection', `✓ API respondeu com sucesso!\n\n${JSON.stringify(response.data, null, 2)}`, 'success');
+            } catch (error) {
+                const errorMsg = error.response 
+                    ? JSON.stringify(error.response.data, null, 2)
+                    : error.message;
+                log('result-connection', `✗ Erro: ${errorMsg}`, 'error');
+            }
+        }
+
+        async function testListDirs(env) {
+            log('result-dirs', `Carregando diretórios de ${env}...`, 'info');
+            try {
+                const response = await axios.get('api.php', {
+                    params: { action: 'listDirs', env }
+                });
+                
+                if (Array.isArray(response.data)) {
+                    log('result-dirs', `✓ Encontrados ${response.data.length} diretórios:\n\n${JSON.stringify(response.data, null, 2)}`, 'success');
+                } else {
+                    log('result-dirs', `⚠ Resposta não é um array:\n\n${JSON.stringify(response.data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                const errorMsg = error.response 
+                    ? JSON.stringify(error.response.data, null, 2)
+                    : error.message;
+                log('result-dirs', `✗ Erro: ${errorMsg}`, 'error');
+            }
+        }
+
+        async function testListFiles(env, folder = '', includeSub = false) {
+            log('result-files', `Carregando arquivos de ${env}/${folder}...`, 'info');
+            try {
+                const response = await axios.get('api.php', {
+                    params: { 
+                        action: 'listFiles',
+                        env,
+                        folder,
+                        includeSub: includeSub ? 'true' : 'false'
+                    }
+                });
+                
+                if (Array.isArray(response.data)) {
+                    log('result-files', `✓ Encontrados ${response.data.length} arquivos:\n\n${JSON.stringify(response.data.slice(0, 10), null, 2)}\n${response.data.length > 10 ? '... (mostrando primeiros 10)' : ''}`, 'success');
+                } else {
+                    log('result-files', `⚠ Resposta não é um array:\n\n${JSON.stringify(response.data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                const errorMsg = error.response 
+                    ? JSON.stringify(error.response.data, null, 2)
+                    : error.message;
+                log('result-files', `✗ Erro: ${errorMsg}`, 'error');
+            }
+        }
+
+        async function testHistory() {
+            log('result-history', 'Carregando histórico...', 'info');
+            try {
+                const response = await axios.get('api.php', {
+                    params: { action: 'getHistory', limit: 10 }
+                });
+                
+                log('result-history', `✓ Histórico carregado:\n\n${JSON.stringify(response.data, null, 2)}`, 'success');
+            } catch (error) {
+                const errorMsg = error.response 
+                    ? JSON.stringify(error.response.data, null, 2)
+                    : error.message;
+                log('result-history', `✗ Erro: ${errorMsg}`, 'error');
+            }
+        }
+
+        async function testStats() {
+            log('result-history', 'Carregando estatísticas...', 'info');
+            try {
+                const response = await axios.get('api.php', {
+                    params: { action: 'getStats' }
+                });
+                
+                log('result-history', `✓ Estatísticas:\n\n${JSON.stringify(response.data, null, 2)}`, 'success');
+            } catch (error) {
+                const errorMsg = error.response 
+                    ? JSON.stringify(error.response.data, null, 2)
+                    : error.message;
+                log('result-history', `✗ Erro: ${errorMsg}`, 'error');
+            }
+        }
+
+        async function checkConfig() {
+            log('result-config', 'Verificando configuração...', 'info');
+            
+            let status = [];
+            
+            // Testar se arquivos existem
+            try {
+                await fetch('config.php');
+                status.push('✓ config.php encontrado');
+            } catch {
+                status.push('✗ config.php NÃO encontrado');
+            }
+
+            try {
+                await fetch('DeployManager.php');
+                status.push('✓ DeployManager.php encontrado');
+            } catch {
+                status.push('✗ DeployManager.php NÃO encontrado');
+            }
+
+            try {
+                await fetch('.env');
+                status.push('✓ .env encontrado');
+            } catch {
+                status.push('✗ .env NÃO encontrado');
+            }
+
+            // Testar API
+            try {
+                const response = await axios.get('api.php', { params: { action: 'getStats' } });
+                status.push('✓ API está respondendo');
+                status.push(`  Operações: ${response.data.total_operations || 0}`);
+            } catch (error) {
+                status.push('✗ API não está respondendo');
+                if (error.response) {
+                    status.push(`  Erro: ${error.response.data.message || 'Erro desconhecido'}`);
+                }
+            }
+
+            log('result-config', status.join('\n'), status.some(s => s.startsWith('✗')) ? 'error' : 'success');
+        }
+
+        // Executar teste automático ao carregar
+        window.onload = () => {
+            testConnection();
+        };
+    </script>
+</body>
+</html>
