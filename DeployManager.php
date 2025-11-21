@@ -6,12 +6,14 @@ require_once 'FileDiffer.php';
 /**
  * Sistema de Deploy com Versionamento
  */
-class DeployManager {
+class DeployManager
+{
     private $config;
     private $history;
     private $currentUser;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->config = Config::getInstance();
         $this->history = new HistoryManager($this->config->get('history_file'));
         $this->currentUser = $this->config->get('current_user');
@@ -20,7 +22,8 @@ class DeployManager {
     /**
      * Push: Envia arquivos do ambiente local para outros ambientes
      */
-    public function push($files, $sourceEnv, $targetEnvs, $createBackup = true, $force = false) {
+    public function push($files, $sourceEnv, $targetEnvs, $createBackup = true, $force = false)
+    {
         $results = [
             'success' => [],
             'errors' => [],
@@ -42,7 +45,7 @@ class DeployManager {
 
         foreach ($targetEnvs as $targetEnv) {
             $targetPath = $this->config->getEnvironmentPath($targetEnv);
-            
+
             if (!$targetPath) {
                 $results['errors'][] = "Ambiente $targetEnv inválido";
                 continue;
@@ -96,7 +99,7 @@ class DeployManager {
 
                 // Criar diretórios necessários
                 $targetDir = dirname($targetFile);
-                
+
                 // Validar caminho antes de criar diretório
                 if (empty($targetDir) || $targetDir === '.' || $targetDir === '..') {
                     $errors[] = "Caminho de destino inválido para: $file";
@@ -158,7 +161,8 @@ class DeployManager {
     /**
      * Pull: Baixa arquivos de outros ambientes para o local
      */
-    public function pull($files, $sourceEnv, $targetEnv = 'local', $createBackup = true, $force = false) {
+    public function pull($files, $sourceEnv, $targetEnv = 'local', $createBackup = true, $force = false)
+    {
         $sourcePath = $this->config->getEnvironmentPath($sourceEnv);
         $targetPath = $this->config->getEnvironmentPath($targetEnv);
 
@@ -232,7 +236,8 @@ class DeployManager {
     /**
      * Criar backup de arquivos
      */
-    private function createBackup($files, $path, $env) {
+    private function createBackup($files, $path, $env)
+    {
         $backupDir = $this->config->get('backup_dir');
         $timestamp = date('Y-m-d_H-i-s');
         $backupFile = $backupDir . "{$this->currentUser}_backup_{$timestamp}_{$env}.zip";
@@ -260,9 +265,10 @@ class DeployManager {
     /**
      * Restaurar de um backup
      */
-    public function restore($backupFile, $targetEnv) {
+    public function restore($backupFile, $targetEnv)
+    {
         $backupPath = $this->config->get('backup_dir') . $backupFile;
-        
+
         if (!file_exists($backupPath)) {
             return ['error' => 'Backup não encontrado'];
         }
@@ -312,12 +318,13 @@ class DeployManager {
     /**
      * Limpar backups antigos
      */
-    private function cleanOldBackups() {
+    private function cleanOldBackups()
+    {
         $maxBackups = $this->config->get('max_backups');
         $backupDir = $this->config->get('backup_dir');
 
         $backups = glob($backupDir . '*.zip');
-        usort($backups, function($a, $b) {
+        usort($backups, function ($a, $b) {
             return filemtime($b) - filemtime($a);
         });
 
@@ -331,7 +338,8 @@ class DeployManager {
     /**
      * Comparar arquivos entre ambientes
      */
-    public function compare($files, $sourceEnv, $targetEnv) {
+    public function compare($files, $sourceEnv, $targetEnv)
+    {
         $sourcePath = $this->config->getEnvironmentPath($sourceEnv);
         $targetPath = $this->config->getEnvironmentPath($targetEnv);
 
@@ -341,24 +349,39 @@ class DeployManager {
     /**
      * Listar arquivos de um ambiente
      */
-    public function listFiles($env, $folder = '', $includeSub = false) {
+    public function listFiles($env, $folder = '', $includeSub = false)
+    {
         $path = $this->config->getEnvironmentPath($env);
         if (!$path) return [];
 
+        // Garantir separador de diretório correto
+        if (!empty($folder)) {
+            // Remover barras do início e fim
+            $folder = trim($folder, '/\\');
+            // Adicionar barra no final
+            $folder = $folder . DIRECTORY_SEPARATOR;
+        }
+
         $fullPath = $path . $folder;
-        if (!is_dir($fullPath)) return [];
+        if (!is_dir($fullPath)) {
+            // Debug: log do caminho que está tentando acessar
+            error_log("DeployManager::listFiles - Caminho não encontrado: $fullPath");
+            return [];
+        }
 
         $files = [];
-        
+
         if ($includeSub) {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($fullPath, RecursiveDirectoryIterator::SKIP_DOTS)
             );
-            
+
             foreach ($iterator as $file) {
                 if ($file->isFile()) {
                     $relativePath = str_replace($path, '', $file->getPathname());
                     $relativePath = str_replace('\\', '/', $relativePath);
+                    // Remover barra inicial se houver
+                    $relativePath = ltrim($relativePath, '/');
                     $files[] = [
                         'name' => $relativePath,
                         'size' => $file->getSize(),
@@ -368,12 +391,22 @@ class DeployManager {
                 }
             }
         } else {
-            foreach (scandir($fullPath) as $item) {
+            $items = @scandir($fullPath);
+            if (!$items) {
+                error_log("DeployManager::listFiles - Não foi possível ler: $fullPath");
+                return [];
+            }
+
+            foreach ($items as $item) {
                 if ($item === '.' || $item === '..') continue;
                 $itemPath = $fullPath . $item;
-                
+
                 if (is_file($itemPath)) {
-                    $relativePath = $folder . $item;
+                    // Montar caminho relativo correto
+                    $relativePath = !empty($folder) ? $folder . $item : $item;
+                    // Normalizar barras
+                    $relativePath = str_replace('\\', '/', $relativePath);
+
                     $files[] = [
                         'name' => $relativePath,
                         'size' => filesize($itemPath),
@@ -385,7 +418,7 @@ class DeployManager {
         }
 
         // Ordenar por data (mais recentes primeiro)
-        usort($files, function($a, $b) {
+        usort($files, function ($a, $b) {
             return $b['modified'] - $a['modified'];
         });
 
@@ -395,7 +428,8 @@ class DeployManager {
     /**
      * Listar diretórios de um ambiente
      */
-    public function listDirs($env) {
+    public function listDirs($env)
+    {
         $path = $this->config->getEnvironmentPath($env);
         if (!$path || !is_dir($path)) return [];
 
@@ -413,21 +447,188 @@ class DeployManager {
     /**
      * Obter histórico
      */
-    public function getHistory($limit = 50) {
+    public function getHistory($limit = 50)
+    {
         return $this->history->getHistory($limit);
     }
 
     /**
      * Obter estatísticas
      */
-    public function getStats() {
+    public function getStats()
+    {
         return $this->history->getStats();
+    }
+
+    /**
+     * Listar todos os projetos customizados do .env
+     */
+    public function listProjects()
+    {
+        $projects = [];
+
+        // Buscar todos os projetos customizados do .env
+        // Formato: PROJECT_NOME="caminho"
+        foreach ($_ENV as $key => $value) {
+            if (strpos($key, 'PROJECT_') === 0) {
+                $projectName = str_replace('PROJECT_', '', $key);
+                $projectName = str_replace('_', ' ', $projectName);
+                $projectName = ucwords(strtolower($projectName));
+
+                $path = $this->config->normalizePathPublic($value);
+
+                if (is_dir($path)) {
+                    $projects[] = [
+                        'name' => $projectName,
+                        'path' => $path,
+                        'env' => 'custom',
+                        'file_count' => $this->countFiles($path),
+                        'last_modified' => $this->getLastModified($path),
+                        'exists' => true
+                    ];
+                } else {
+                    // Mostrar mesmo se não existir (com aviso)
+                    $projects[] = [
+                        'name' => $projectName . ' ⚠️',
+                        'path' => $path,
+                        'env' => 'custom',
+                        'file_count' => 0,
+                        'last_modified' => null,
+                        'exists' => false
+                    ];
+                }
+            }
+        }
+
+        // Adicionar também os caminhos de deploy como projetos
+        // Projeto local
+        $localPath = $this->config->get('local_path');
+        if ($localPath && is_dir($localPath)) {
+            $projects[] = [
+                'name' => 'Deploy Local',
+                'path' => $localPath,
+                'env' => 'local',
+                'file_count' => $this->countFiles($localPath),
+                'last_modified' => $this->getLastModified($localPath),
+                'exists' => true
+            ];
+        }
+
+        // Ambientes de desenvolvimento
+        $devPaths = $this->config->get('dev_paths');
+        if ($devPaths && is_array($devPaths)) {
+            foreach ($devPaths as $envName => $envPath) {
+                if (is_dir($envPath)) {
+                    $projects[] = [
+                        'name' => 'Deploy ' . $envName,
+                        'path' => $envPath,
+                        'env' => strtolower($envName),
+                        'file_count' => $this->countFiles($envPath),
+                        'last_modified' => $this->getLastModified($envPath),
+                        'exists' => true
+                    ];
+                }
+            }
+        }
+
+        // Produção
+        $prodPath = $this->config->get('prod_path');
+        if ($prodPath && is_dir($prodPath)) {
+            $projects[] = [
+                'name' => 'Deploy Produção',
+                'path' => $prodPath,
+                'env' => 'producao',
+                'file_count' => $this->countFiles($prodPath),
+                'last_modified' => $this->getLastModified($prodPath),
+                'exists' => true
+            ];
+        }
+
+        return $projects;
+    }
+
+    /**
+     * Contar arquivos em um diretório (não recursivo)
+     */
+    private function countFiles($path)
+    {
+        if (!is_dir($path)) return 0;
+
+        $count = 0;
+        $items = @scandir($path);
+
+        if ($items) {
+            foreach ($items as $item) {
+                if ($item === '.' || $item === '..') continue;
+                if (is_file($path . $item)) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Obter data da última modificação
+     */
+    private function getLastModified($path)
+    {
+        if (!is_dir($path)) return null;
+
+        $latest = 0;
+        $items = @scandir($path);
+
+        if ($items) {
+            foreach ($items as $item) {
+                if ($item === '.' || $item === '..') continue;
+                $itemPath = $path . $item;
+                if (is_file($itemPath)) {
+                    $mtime = filemtime($itemPath);
+                    if ($mtime > $latest) {
+                        $latest = $mtime;
+                    }
+                }
+            }
+        }
+
+        return $latest > 0 ? date('d/m/Y H:i', $latest) : null;
+    }
+
+    /**
+     * Obter subdiretórios de primeiro nível
+     */
+    private function getSubdirectories($path, $maxDepth = 1)
+    {
+        if (!is_dir($path)) return [];
+
+        $subdirs = [];
+        $items = @scandir($path);
+
+        if ($items) {
+            foreach ($items as $item) {
+                if ($item === '.' || $item === '..') continue;
+
+                $itemPath = $path . $item;
+                if (is_dir($itemPath)) {
+                    $subdirs[] = [
+                        'name' => $item,
+                        'path' => $itemPath . DIRECTORY_SEPARATOR,
+                        'file_count' => $this->countFiles($itemPath . DIRECTORY_SEPARATOR),
+                        'last_modified' => $this->getLastModified($itemPath . DIRECTORY_SEPARATOR)
+                    ];
+                }
+            }
+        }
+
+        return $subdirs;
     }
 
     /**
      * Log de operações
      */
-    private function log($message) {
+    private function log($message)
+    {
         $logFile = $this->config->get('log_file');
         $timestamp = date('Y-m-d H:i:s');
         $logMessage = "[$timestamp] [{$this->currentUser}] $message\n";

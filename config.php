@@ -104,6 +104,10 @@ class Config {
         return $path;
     }
 
+    public function normalizePathPublic($path) {
+        return $this->normalizePath($path);
+    }
+
     private function ensureDirectories() {
         $dirs = ['backup_dir', 'temp_dir'];
         foreach ($dirs as $dir) {

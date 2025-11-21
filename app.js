@@ -12,7 +12,8 @@ const AppState = {
     pullFiles: [],
     selectedPullFiles: [],
     history: [],
-    stats: {}
+    stats: {},
+    projects: []
 };
 
 // Inicialização
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFolders();
     loadPullFolders(); // Carregar pastas para aba Sync
     loadHistory();
+    loadProjects(); // Carregar projetos
     setupEventListeners();
 });
 
@@ -1023,3 +1025,224 @@ function showModal(title, content) {
         modal.remove();
     });
 }
+
+// ========================================
+// FUNÇÕES DE PROJETOS
+// ========================================
+
+// Carregar projetos
+async function loadProjects() {
+    const grid = document.getElementById('projectsGrid');
+    
+    grid.innerHTML = `
+        <div class="col-12">
+            <div class="loading">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Carregando projetos...</p>
+            </div>
+        </div>
+    `;
+
+    try {
+        const response = await axios.get('api.php', {
+            params: { action: 'listProjects' }
+        });
+
+        if (response.data && Array.isArray(response.data)) {
+            AppState.projects = response.data;
+            renderProjects();
+        } else {
+            console.warn('Resposta inválida de projetos:', response.data);
+            AppState.projects = [];
+            renderProjects();
+        }
+
+    } catch (error) {
+        console.error('Erro ao carregar projetos:', error);
+        grid.innerHTML = '<div class="col-12"><div class="alert alert-danger">Erro ao carregar projetos</div></div>';
+    }
+}
+
+// Renderizar projetos
+function renderProjects() {
+    const grid = document.getElementById('projectsGrid');
+    const filterEnv = document.getElementById('filterProjectEnv').value;
+    const searchTerm = document.getElementById('searchProjects').value.toLowerCase();
+
+    let projects = AppState.projects || [];
+
+    // Filtrar por ambiente
+    if (filterEnv !== 'all') {
+        if (filterEnv === 'custom') {
+            projects = projects.filter(p => p.env === 'custom');
+        } else {
+            projects = projects.filter(p => p.env === filterEnv);
+        }
+    }
+
+    // Filtrar por busca
+    if (searchTerm) {
+        projects = projects.filter(p => 
+            p.name.toLowerCase().includes(searchTerm) ||
+            p.path.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    if (projects.length === 0) {
+        grid.innerHTML = '<div class="col-12"><div class="text-center text-muted p-4">Nenhum projeto encontrado</div></div>';
+        return;
+    }
+
+    let html = '';
+    projects.forEach(project => {
+        const envBadgeClass = project.env === 'local' ? 'local' : 
+                             project.env === 'producao' ? 'prod' : 
+                             project.env === 'custom' ? 'custom' : 'dev';
+        
+        const icon = getProjectIcon(project.name);
+        const isInvalid = !project.exists;
+        const cardClass = isInvalid ? 'opacity-50' : '';
+
+        html += `
+            <div class="col-md-6 col-lg-4">
+                <div class="project-card ${cardClass}">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="bi bi-${icon}"></i>
+                        </div>
+                        <div class="project-info">
+                            <div class="project-name">${project.name}</div>
+                            <div class="env-badge ${envBadgeClass}">
+                                ${project.env === 'custom' ? '⭐ Personalizado' : project.env}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-path" title="${project.path}">
+                        <i class="bi bi-folder"></i> ${truncatePath(project.path, 40)}
+                    </div>
+
+                    ${isInvalid ? '<div class="alert alert-warning py-1 px-2 mt-2 mb-2"><small>⚠️ Caminho não encontrado</small></div>' : ''}
+
+                    <div class="project-stats">
+                        <div class="project-stat">
+                            <i class="bi bi-files"></i>
+                            <span>${project.file_count || 0} arquivos</span>
+                        </div>
+                        <div class="project-stat">
+                            <i class="bi bi-clock"></i>
+                            <span>${project.last_modified || 'N/A'}</span>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="btn-vscode" onclick="openInVSCode('${escapeJs(project.path)}')" ${isInvalid ? 'disabled' : ''}>
+                            <i class="bi bi-code-square"></i>
+                            VSCode
+                        </button>
+                        <button class="btn-explorer" onclick="openInExplorer('${escapeJs(project.path)}')" ${isInvalid ? 'disabled' : ''}>
+                            <i class="bi bi-folder2-open"></i>
+                            Abrir Pasta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    grid.innerHTML = html;
+}
+
+// Obter ícone do projeto baseado no nome
+function getProjectIcon(name) {
+    const nameLower = name.toLowerCase();
+    
+    if (nameLower.includes('admin')) return 'gear-fill';
+    if (nameLower.includes('api')) return 'server';
+    if (nameLower.includes('site') || nameLower.includes('web')) return 'globe';
+    if (nameLower.includes('blog')) return 'journal-text';
+    if (nameLower.includes('shop') || nameLower.includes('loja')) return 'cart';
+    if (nameLower.includes('hotel')) return 'building';
+    if (nameLower.includes('tour')) return 'map';
+    if (nameLower.includes('doc')) return 'file-text';
+    
+    return 'folder-fill';
+}
+
+// Truncar caminho
+function truncatePath(path, maxLength) {
+    if (path.length <= maxLength) return path;
+    
+    const parts = path.split(/[\\\/]/);
+    if (parts.length <= 2) return path;
+    
+    return '...' + path.substring(path.length - maxLength);
+}
+
+// Escapar string para JS
+function escapeJs(str) {
+    return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+// Abrir no VSCode
+function openInVSCode(path) {
+    // Criar link vscode://
+    const vscodeUrl = `vscode://file/${encodeURIComponent(path)}`;
+    
+    // Tentar abrir
+    window.location.href = vscodeUrl;
+    
+    showToast('Abrindo no VSCode...', 'info');
+    
+    // Instruções alternativas
+    setTimeout(() => {
+        showModal('Como Abrir no VSCode', `
+            <p>Se o VSCode não abriu automaticamente, você tem algumas opções:</p>
+            
+            <h6 class="mt-3">Opção 1: Via Terminal/CMD</h6>
+            <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px;">code "${path}"</pre>
+            
+            <h6 class="mt-3">Opção 2: Arrastar e Soltar</h6>
+            <p>Arraste a pasta do projeto para o ícone do VSCode</p>
+            
+            <h6 class="mt-3">Opção 3: Abrir Manualmente</h6>
+            <p>File → Open Folder → Navegue até:<br><code>${path}</code></p>
+            
+            <div class="alert alert-info mt-3">
+                <strong>Dica:</strong> Para que o link funcione automaticamente, certifique-se de que o VSCode está instalado e o comando "code" está no PATH do sistema.
+            </div>
+        `);
+    }, 2000);
+}
+
+// Abrir no Explorer/Finder
+function openInExplorer(path) {
+    // Detectar sistema operacional
+    const isWindows = path.includes('\\') || path.includes('C:');
+    
+    if (isWindows) {
+        // Windows: usar file:///
+        window.open('file:///' + path.replace(/\\/g, '/'));
+    } else {
+        // Linux/Mac
+        window.open('file://' + path);
+    }
+    
+    showToast('Abrindo pasta...', 'info');
+}
+
+// Filtrar projetos
+function filterProjects() {
+    renderProjects();
+}
+
+// Event listener para busca de projetos
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchProjects');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            renderProjects();
+        });
+    }
+});
+

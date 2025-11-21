@@ -1,4 +1,5 @@
 <?php
+
 /**
  * API REST - Sistema de Deploy & Sincronização
  * Versão corrigida com melhor tratamento de erros
@@ -17,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Error handler
-set_error_handler(function($errno, $errstr, $errfile, $errline) {
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 });
 
@@ -31,9 +32,9 @@ try {
     }
 
     require_once 'DeployManager.php';
-    
+
     $method = $_SERVER['REQUEST_METHOD'];
-    
+
     if ($method === 'GET') {
         handleGetRequest();
     } elseif ($method === 'POST') {
@@ -41,7 +42,6 @@ try {
     } else {
         throw new Exception('Método HTTP não permitido: ' . $method);
     }
-    
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
@@ -53,50 +53,51 @@ try {
     exit;
 }
 
-function handleGetRequest() {
+function handleGetRequest()
+{
     $action = $_GET['action'] ?? '';
-    
+
     try {
         $deploy = new DeployManager();
-        
+
         switch ($action) {
             case 'listDirs':
                 $env = $_GET['env'] ?? 'local';
                 $dirs = $deploy->listDirs($env);
-                
+
                 // Garantir que retorna array
                 if (!is_array($dirs)) {
                     $dirs = [];
                 }
-                
+
                 echo json_encode($dirs);
                 break;
-                
+
             case 'listFiles':
                 $env = $_GET['env'] ?? 'local';
                 $folder = $_GET['folder'] ?? '';
                 $includeSub = ($_GET['includeSub'] ?? 'false') === 'true';
-                
+
                 $files = $deploy->listFiles($env, $folder, $includeSub);
-                
+
                 // Garantir que retorna array
                 if (!is_array($files)) {
                     $files = [];
                 }
-                
+
                 echo json_encode($files);
                 break;
-                
+
             case 'getHistory':
                 $limit = (int)($_GET['limit'] ?? 50);
                 $history = $deploy->getHistory($limit);
                 $stats = $deploy->getStats();
-                
+
                 // Garantir estrutura correta
                 if (!is_array($history)) {
                     $history = [];
                 }
-                
+
                 if (!is_array($stats)) {
                     $stats = [
                         'total_operations' => 0,
@@ -105,16 +106,16 @@ function handleGetRequest() {
                         'by_day' => []
                     ];
                 }
-                
+
                 echo json_encode([
                     'history' => $history,
                     'stats' => $stats
                 ]);
                 break;
-                
+
             case 'getStats':
                 $stats = $deploy->getStats();
-                
+
                 if (!is_array($stats)) {
                     $stats = [
                         'total_operations' => 0,
@@ -123,14 +124,23 @@ function handleGetRequest() {
                         'by_day' => []
                     ];
                 }
-                
+
                 echo json_encode($stats);
                 break;
-                
+
+            case 'listProjects':
+                $projects = $deploy->listProjects();
+
+                if (!is_array($projects)) {
+                    $projects = [];
+                }
+
+                echo json_encode($projects);
+                break;
+
             default:
                 throw new Exception('Ação não reconhecida: ' . $action);
         }
-        
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
@@ -141,9 +151,10 @@ function handleGetRequest() {
     }
 }
 
-function handlePostRequest() {
+function handlePostRequest()
+{
     $input = json_decode(file_get_contents('php://input'), true);
-    
+
     if (json_last_error() !== JSON_ERROR_NONE) {
         http_response_code(400);
         echo json_encode([
@@ -152,12 +163,12 @@ function handlePostRequest() {
         ]);
         return;
     }
-    
+
     $action = $input['action'] ?? '';
-    
+
     try {
         $deploy = new DeployManager();
-        
+
         switch ($action) {
             case 'push':
                 $result = $deploy->push(
@@ -169,7 +180,7 @@ function handlePostRequest() {
                 );
                 echo json_encode($result);
                 break;
-                
+
             case 'pull':
                 $result = $deploy->pull(
                     $input['files'] ?? [],
@@ -180,7 +191,7 @@ function handlePostRequest() {
                 );
                 echo json_encode($result);
                 break;
-                
+
             case 'compare':
                 $result = $deploy->compare(
                     $input['files'] ?? [],
@@ -189,25 +200,25 @@ function handlePostRequest() {
                 );
                 echo json_encode($result);
                 break;
-                
+
             case 'checkConflicts':
                 $config = Config::getInstance();
                 $sourcePath = $config->getEnvironmentPath($input['sourceEnv'] ?? 'local');
                 $targetPath = $config->getEnvironmentPath($input['targetEnv'] ?? 'local');
-                
+
                 if (!$sourcePath || !$targetPath) {
                     throw new Exception('Ambiente inválido');
                 }
-                
+
                 $conflicts = FileDiffer::checkConflicts(
                     $input['files'] ?? [],
                     $sourcePath,
                     $targetPath
                 );
-                
+
                 echo json_encode(['conflicts' => $conflicts]);
                 break;
-                
+
             case 'restore':
                 $result = $deploy->restore(
                     $input['backupFile'] ?? '',
@@ -215,11 +226,10 @@ function handlePostRequest() {
                 );
                 echo json_encode($result);
                 break;
-                
+
             default:
                 throw new Exception('Ação não reconhecida: ' . $action);
         }
-        
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([

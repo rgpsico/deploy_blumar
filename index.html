@@ -281,6 +281,155 @@
             right: 20px;
             z-index: 9999;
         }
+
+        /* Estilos para Projetos */
+        .project-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            height: 100%;
+        }
+
+        .project-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0,102,204,0.2);
+            transform: translateY(-2px);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .project-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .project-path {
+            font-size: 12px;
+            color: #6c757d;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .project-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-vscode {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-vscode:hover {
+            background: #005a9e;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,122,204,0.3);
+        }
+
+        .btn-explorer {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-explorer:hover {
+            background: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(40,167,69,0.3);
+        }
+
+        .env-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .env-badge.local {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .env-badge.dev {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .env-badge.prod {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .env-badge.custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -312,6 +461,11 @@
                 <li class="nav-item">
                     <button class="nav-link" data-bs-toggle="pill" data-bs-target="#history-tab">
                         <i class="bi bi-clock-history"></i> Histórico
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#projects-tab">
+                        <i class="bi bi-folder2-open"></i> Projetos
                     </button>
                 </li>
             </ul>
@@ -619,6 +773,46 @@
 
                     <div id="historyList">
                         <div class="loading">Carregando histórico...</div>
+                    </div>
+                </div>
+
+                <!-- PROJECTS TAB -->
+                <div class="tab-pane fade" id="projects-tab">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i> 
+                                <strong>Dica:</strong> Clique no botão "Abrir no VSCode" para abrir o projeto diretamente no editor.
+                                Para funcionar, você precisa ter o VSCode instalado com o comando "code" no PATH.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros de Projetos -->
+                    <div class="filter-section mb-4">
+                        <input type="text" id="searchProjects" class="form-control" placeholder="🔍 Buscar projeto...">
+                        <select id="filterProjectEnv" class="form-select" style="width: auto;" onchange="filterProjects()">
+                            <option value="all">Todos os Ambientes</option>
+                            <option value="custom">⭐ Personalizados</option>
+                            <option value="local">Meu Local</option>
+                            <option value="roger">Roger</option>
+                            <option value="julio">Julio</option>
+                            <option value="jades">Jades</option>
+                            <option value="producao">Produção</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadProjects()">
+                            <i class="bi bi-arrow-clockwise"></i> Recarregar
+                        </button>
+                    </div>
+
+                    <!-- Grid de Projetos -->
+                    <div id="projectsGrid" class="row g-3">
+                        <div class="col-12">
+                            <div class="loading">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2">Carregando projetos...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
