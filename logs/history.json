@@ -1,5 +1,736 @@
 [
     {
+        "id": "692929a0575ea",
+        "timestamp": "2025-11-28 04:48:32",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "includes\/moderno-sidebar.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6929297eaa911",
+        "timestamp": "2025-11-28 04:47:58",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "lista_conteudo_modern.php",
+            "lista_conteudo.php"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6929290fa068d",
+        "timestamp": "2025-11-28 04:46:07",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "base_imagem_teste\/index.php",
+            "base_imagem_teste\/buscar_imagens.php",
+            "base_imagem_teste\/api-endpoint-example.php",
+            "base_imagem_teste\/buscar_cidades.php",
+            "base_imagem_teste\/mover_imagens.php",
+            "base_imagem_teste\/index_exemplo_integracao.php"
+        ],
+        "file_count": 6,
+        "notes": "6 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "692928ef431f0",
+        "timestamp": "2025-11-28 04:45:35",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "api\/api_financeiro_pagos.php",
+            "api\/newsletters.php",
+            "api\/api_mover_imagens.php",
+            "api\/api_buscar_cidades.php"
+        ],
+        "file_count": 4,
+        "notes": "4 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "692764482ced6",
+        "timestamp": "2025-11-26 20:34:16",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "api\/api_financeiro_pagos.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "69271f83836ae",
+        "timestamp": "2025-11-26 15:40:51",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "toursv2\/listar.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "69271ed4bf12d",
+        "timestamp": "2025-11-26 15:37:56",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "js\/toursv2.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "69271ec46983a",
+        "timestamp": "2025-11-26 15:37:40",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "lista_conteudo.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "69271eaba7638",
+        "timestamp": "2025-11-26 15:37:15",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "toursv2\/listar.js",
+            "toursv2\/listar.css",
+            "toursv2\/listar.php"
+        ],
+        "file_count": 3,
+        "notes": "3 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "69271affe85ae",
+        "timestamp": "2025-11-26 15:21:35",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "api\/tour.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "69271a486f68f",
+        "timestamp": "2025-11-26 15:18:32",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "tours\/miolo_tours.php",
+            "tours\/altera_tour.php",
+            "tours\/form_altera_tour.php",
+            "tours\/insere_novo_tour.php",
+            "tours\/form_novo_tour.php",
+            "tours\/miolo_tours_completo_nacional.php",
+            "tours\/miolo_tours_completo.php",
+            "tours\/miolo_tours_incentivo_completo.php",
+            "tours\/update_date_tour.php",
+            "tours\/delete_data.php",
+            "tours\/insert_date_tour.php",
+            "tours\/edit_data.php",
+            "tours\/update_tour.php",
+            "tours\/admin_tours.php",
+            "tours\/busca_desc_srv.php",
+            "tours\/form_single_tour.php",
+            "tours\/lista_tours_latino.php",
+            "tours\/template_tour.php",
+            "tours\/tours_incentivos.php",
+            "tours\/insere_single_tour.php",
+            "tours\/lista_cid_tour.php",
+            "tours\/lista_tours_selo_new.php",
+            "tours\/monta_lista_tours_latino.php",
+            "tours\/update_tour_sdepto.php"
+        ],
+        "file_count": 24,
+        "notes": "24 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924c7887a0c8",
+        "timestamp": "2025-11-24 21:00:56",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "js\/modern-admin.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924c74cd86c5",
+        "timestamp": "2025-11-24 20:59:56",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "css\/moderno-admin-extras.css",
+            "css\/modern-admin.css",
+            "css\/modern-admin-extras.css"
+        ],
+        "file_count": 3,
+        "notes": "3 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924c7324fd6e",
+        "timestamp": "2025-11-24 20:59:30",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "includes\/moderno-sidebar.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924c7184ce03",
+        "timestamp": "2025-11-24 20:59:04",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "lista_conteudo_modern.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924af8da3c73",
+        "timestamp": "2025-11-24 19:18:37",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "js\/modern-admin.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924af69c7521",
+        "timestamp": "2025-11-24 19:18:01",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "css\/modern-admin-extras.css",
+            "css\/modern-admin.css"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924af20732dc",
+        "timestamp": "2025-11-24 19:16:48",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "lista_conteudo_modern.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924ac8c3448a",
+        "timestamp": "2025-11-24 19:05:48",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "js\/auth.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924a24f65019",
+        "timestamp": "2025-11-24 18:22:07",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "api\/newsletters.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6924a1a79dc7e",
+        "timestamp": "2025-11-24 18:19:19",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "newsv2\/listar.js",
+            "newsv2\/listar.css",
+            "newsv2\/listar.php"
+        ],
+        "file_count": 3,
+        "notes": "3 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "692478f32d964",
+        "timestamp": "2025-11-24 15:25:39",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "api\/newsletters.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "692478b24a2a5",
+        "timestamp": "2025-11-24 15:24:34",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "newsv2\/listar.js",
+            "newsv2\/listar.php",
+            "newsv2\/listar.css"
+        ],
+        "file_count": 3,
+        "notes": "3 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "692297ceced96",
+        "timestamp": "2025-11-23 05:12:46",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "abtv2\/listar.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "692297bc37d4e",
+        "timestamp": "2025-11-23 05:12:28",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "api\/abt.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920d94d8cbe1",
+        "timestamp": "2025-11-21 21:27:41",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Jades",
+        "files": [
+            "newsv2\/listar.php",
+            "newsv2\/listar.css"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920d94920f3d",
+        "timestamp": "2025-11-21 21:27:37",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Julio",
+        "files": [
+            "newsv2\/listar.php",
+            "newsv2\/listar.css"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920d94511c37",
+        "timestamp": "2025-11-21 21:27:33",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "newsv2\/listar.php",
+            "newsv2\/listar.css"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920d78b17042",
+        "timestamp": "2025-11-21 21:20:11",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "blogv2\/miolo_blognacional.php",
+            "blogv2\/upload_image.php",
+            "blogv2\/form_altera_post.php",
+            "blogv2\/update_post.php",
+            "blogv2\/form_novo_post.php",
+            "blogv2\/insere_novo_post.php",
+            "blogv2\/editar_blog.php",
+            "blogv2\/excluir_post.php"
+        ],
+        "file_count": 8,
+        "notes": "8 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920d02239300",
+        "timestamp": "2025-11-21 20:48:34",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "lista_conteudo.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cfffaddae",
+        "timestamp": "2025-11-21 20:47:59",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Jades",
+        "files": [
+            "newsv2\/listar.php",
+            "newsv2\/listar.css"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cff98b1a3",
+        "timestamp": "2025-11-21 20:47:53",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Julio",
+        "files": [
+            "newsv2\/listar.php",
+            "newsv2\/listar.css"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cff25246f",
+        "timestamp": "2025-11-21 20:47:46",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "newsv2\/listar.php",
+            "newsv2\/listar.css"
+        ],
+        "file_count": 2,
+        "notes": "2 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cfc0bb189",
+        "timestamp": "2025-11-21 20:46:56",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Jades",
+        "files": [
+            "js\/newsv2.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cfbe0d6b5",
+        "timestamp": "2025-11-21 20:46:54",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Julio",
+        "files": [
+            "js\/newsv2.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cfbb06f51",
+        "timestamp": "2025-11-21 20:46:51",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "js\/newsv2.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cf911129a",
+        "timestamp": "2025-11-21 20:46:09",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Jades",
+        "files": [
+            "api\/newsletters.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cf8d818c7",
+        "timestamp": "2025-11-21 20:46:05",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Julio",
+        "files": [
+            "api\/newsletters.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920cf8a31f95",
+        "timestamp": "2025-11-21 20:46:02",
+        "user": "rogerneves",
+        "action": "push",
+        "from": "local",
+        "to": "Roger",
+        "files": [
+            "api\/newsletters.php"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) enviado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920bcd094132",
+        "timestamp": "2025-11-21 19:26:08",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "js\/deluxev2.js",
+            "js\/auth.js",
+            "js\/apimanager.js",
+            "js\/cote.js",
+            "js\/beach_housev2.js",
+            "js\/abtv2.js",
+            "js\/cidadev2.js",
+            "js\/contatos.js",
+            "js\/clientes.js",
+            "js\/expertsv2.js",
+            "js\/venuesv2.js",
+            "js\/hotelv2.js",
+            "js\/banco_imagem.js",
+            "js\/blognacionalv2.js",
+            "js\/hotel.js",
+            "js\/venues.js",
+            "js\/news.js",
+            "js\/abt.js",
+            "js\/restaurante.js",
+            "js\/blognacional.js",
+            "js\/controle_acesso.js",
+            "js\/product_update.js",
+            "js\/cidade.js",
+            "js\/guias.js",
+            "js\/tours.js",
+            "js\/inspections.js",
+            "js\/banco_video.js",
+            "js\/trailfinders.js",
+            "js\/del_facapto.js",
+            "js\/del_fachtl.js",
+            "js\/deluxe.js",
+            "js\/jquery.form.js",
+            "js\/tar_htl.js",
+            "js\/accordion.js",
+            "js\/beach_house.js",
+            "js\/busca_contatos.js",
+            "js\/ckeditor.js",
+            "js\/clientes_functions.js",
+            "js\/config.js",
+            "js\/datas_mask.js",
+            "js\/del_htl.js",
+            "js\/destaque_fit.js",
+            "js\/eco.js",
+            "js\/experts.js",
+            "js\/funcionarios.js",
+            "js\/jquery.js",
+            "js\/log.js",
+            "js\/log_tarifario.js",
+            "js\/masked_cnpj.js",
+            "js\/minisite.js",
+            "js\/navegacao.js",
+            "js\/os_sistem.js",
+            "js\/os_sistem_financeiro.js",
+            "js\/pegafoto.js",
+            "js\/renovation.js",
+            "js\/show-layer.js",
+            "js\/tariff_tools.js",
+            "js\/various.js"
+        ],
+        "file_count": 58,
+        "notes": "58 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920bbf1b7328",
+        "timestamp": "2025-11-21 19:22:25",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "js\/auth.js"
+        ],
+        "file_count": 1,
+        "notes": "1 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920b1ec9d0ba",
+        "timestamp": "2025-11-21 18:39:40",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "consultar_dados.php",
+            "adicionarcamposbanco.php",
+            "generate_api_docs.php",
+            "lista_conteudo.php"
+        ],
+        "file_count": 4,
+        "notes": "4 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
+        "id": "6920b00007f7a",
+        "timestamp": "2025-11-21 18:31:28",
+        "user": "rogerneves",
+        "action": "pull",
+        "from": "Roger",
+        "to": "local",
+        "files": [
+            "newsletter\/update_news.php",
+            "newsletter\/form_update_news.php",
+            "newsletter\/form_nova_news.php",
+            "newsletter\/insere_nova_news.php",
+            "newsletter\/insert_menu_lateral.php",
+            "newsletter\/conteudo_minisite.php",
+            "newsletter\/deleta_destaque.php",
+            "newsletter\/duplica_news.php",
+            "newsletter\/form_conteudo_especialista.php",
+            "newsletter\/form_conteudo_minisite.php",
+            "newsletter\/form_destaques_news.php",
+            "newsletter\/insere_destaque.php",
+            "newsletter\/lista_news.php",
+            "newsletter\/miolo_news.php",
+            "newsletter\/retrive_destaque.php",
+            "newsletter\/update_destaque.php"
+        ],
+        "file_count": 16,
+        "notes": "16 arquivo(s) baixado(s)",
+        "backup_file": null
+    },
+    {
         "id": "691fbdbf1144b",
         "timestamp": "2025-11-21 01:17:51",
         "user": "rogerneves",
